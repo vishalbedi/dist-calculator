@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Nautical Distance Calculator</title>
+    <link rel="stylesheet" href="stylesheets/main.css">
+</head>
+<body class="container">
+<header>Nautical Distance Calculator</header>
+<div class="side-bar">
+    <div class="select-fields">
+        <p id="start-valid"></p>
+        <label for="start-airport">Start</label>
+        <input type="text" name="start-destination" id="start-airport" list="start_list">
+        <datalist id="start_list">
+        </datalist>
+        <br>
+        <br>
+        <p id="end-valid"></p>
+        <label for="end-airport">End&nbsp</label>
+        <input type="text" name="end-destination" id="end-airport" list="end_list">
+        <datalist id="end_list">
+        </datalist>
+        <br>
+        <br>
+        <button id="calculate" class="button">Calculate</button>
+    </div>
+
+</div>
+<main>
+    <hi id="display-distance"></hi>
+    <div id="map-placeholder" style="width:100%;height:100%;"></div>
+</main>
+</body>
+<script src ="https://maps.googleapis.com/maps/api/js" type="application/javascript"></script>
+<script src="javascript/airport-autocomplete.js" type="application/javascript"></script>
+<script src="javascript/distance-calculator.js" type="application/javascript"></script>
+<script>
+    (()=>{
+       let autocompleteStart = new AirportAutocomplete(document.getElementById('start-airport'),
+           document.getElementById('start_list'), document.getElementById('start-valid'));
+       autocompleteStart.attachEvents();
+       let autocompleteEnd = new AirportAutocomplete(document.getElementById('end-airport'),
+           document.getElementById('end_list'), document.getElementById('end-valid'));
+       autocompleteEnd.attachEvents();
+
+        //center the map to USA
+        let mapOptions = {
+            center : new google.maps.LatLng(40.9317536, -104.5755625),
+            zoom : 5
+        };
+        let map = new google.maps.Map(document.getElementById('map-placeholder'), mapOptions);
+        let dc = new DistanceCalculator(autocompleteStart, autocompleteEnd, map);
+        let button = document.getElementById('calculate');
+        button.addEventListener('click', (evt)=>{
+            let distance =dc.calculate();
+            if( distance > 0){
+                dc.plotOnMap();
+                let start = autocompleteStart.getSelectedAirport().name;
+                let end = autocompleteEnd.getSelectedAirport().name;
+                document.getElementById('display-distance').innerHTML = `Distance between ${start} and ${end}
+                 is ${distance.toFixed(3)} nmi `;
+            }
+
+        });
+    })()
+</script>
+</html>

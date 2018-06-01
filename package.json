@@ -1,0 +1,13 @@
+{
+  "name": "dist-calculator",
+  "version": "0.0.1",
+  "scripts": {
+    "start:dev": "node ./bin/www",
+    "start:debug": "DEBUG=dist-calculator:* node ./bin/www"
+  },
+  "dependencies": {
+    "debug": "^3.1.0",
+    "dotenv": "^5.0.1",
+    "express": "^4.16.3"
+  }
+}
